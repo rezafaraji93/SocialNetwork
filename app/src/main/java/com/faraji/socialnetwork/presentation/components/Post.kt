@@ -39,24 +39,31 @@ import com.faraji.socialnetwork.util.Constants
 @Composable
 fun Post(
     post: Post,
-    profilePictureSize: Dp = 75.dp
+    modifier: Modifier = Modifier,
+    showProfileImage: Boolean = true,
+    onPostClick: () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(SpaceMedium)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(y = profilePictureSize.div(2))
+                .offset(y = if (showProfileImage) {
+                    ProfilePictureSizeMedium / 2f
+                } else 0.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .shadow(5.dp)
                 .background(MediumGray)
+                .clickable {
+                    onPostClick()
+                }
         ) {
             Image(
                 painterResource(id = R.drawable.kermit),
-                contentDescription = "Post image",
+                contentDescription = "Post image"
             )
             Column(
                 modifier = Modifier
@@ -64,7 +71,7 @@ fun Post(
                     .padding(SpaceMedium)
             ) {
                 ActionRow(
-                    username = "Reza Faraji",
+                    username = "Philipp Lackner",
                     modifier = Modifier.fillMaxWidth(),
                     onLikeClick = { isLiked ->
 
@@ -75,7 +82,7 @@ fun Post(
                     onShareClick = {
 
                     },
-                    onUsernameClicked = { username ->
+                    onUsernameClick = { username ->
 
                     }
                 )
@@ -85,11 +92,13 @@ fun Post(
                         append(post.description)
                         withStyle(
                             SpanStyle(
-                                color = HintGray
+                                color = HintGray,
                             )
                         ) {
                             append(
-                                LocalContext.current.getString(R.string.read_more)
+                                LocalContext.current.getString(
+                                    R.string.read_more
+                                )
                             )
                         }
                     },
@@ -97,9 +106,7 @@ fun Post(
                     overflow = TextOverflow.Ellipsis,
                     maxLines = Constants.MAX_POST_DESCRIPTION_LINES
                 )
-
                 Spacer(modifier = Modifier.height(SpaceMedium))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -111,8 +118,8 @@ fun Post(
                             post.likeCount
                         ),
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.h2,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.h2
                     )
                     Text(
                         text = stringResource(
@@ -120,25 +127,24 @@ fun Post(
                             post.commentCount
                         ),
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.h2,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.h2
                     )
                 }
-
             }
         }
-
-        Image(
-            painterResource(id = R.drawable.reza),
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .size(profilePictureSize)
-                .clip(CircleShape)
-                .align(Alignment.TopCenter)
-        )
+        if (showProfileImage) {
+            Image(
+                painterResource(id = R.drawable.reza),
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    .size(ProfilePictureSizeMedium)
+                    .clip(CircleShape)
+                    .align(Alignment.TopCenter)
+            )
+        }
     }
 }
-
 
 @Composable
 fun EngagementButtons(
@@ -147,7 +153,7 @@ fun EngagementButtons(
     iconSize: Dp = 30.dp,
     onLikeClick: (Boolean) -> Unit = {},
     onCommentClick: () -> Unit = {},
-    onShareClick: () -> Unit = {}
+    onShareClick: () -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
@@ -159,62 +165,57 @@ fun EngagementButtons(
                 onLikeClick(!isLiked)
             },
             modifier = Modifier.size(iconSize)
-        )
-        {
+        ) {
             Icon(
                 imageVector = Icons.Filled.Favorite,
-                tint = if (isLiked) Color.Red else TextWhite,
-                contentDescription = if (isLiked) stringResource(id = R.string.unlike) else stringResource(
-                    id = R.string.like
-                )
+                tint = if (isLiked) {
+                    Color.Red
+                } else {
+                    TextWhite
+                },
+                contentDescription = if (isLiked) {
+                    stringResource(id = R.string.unlike)
+                } else {
+                    stringResource(id = R.string.like)
+                }
             )
         }
-
         Spacer(modifier = Modifier.width(SpaceMedium))
-
         IconButton(
             onClick = {
                 onCommentClick()
             },
             modifier = Modifier.size(iconSize)
-        )
-        {
+        ) {
             Icon(
                 imageVector = Icons.Filled.Comment,
                 contentDescription = stringResource(id = R.string.comment)
             )
-
         }
-
         Spacer(modifier = Modifier.width(SpaceMedium))
-
         IconButton(
             onClick = {
                 onShareClick()
             },
             modifier = Modifier.size(iconSize)
-        )
-        {
+        ) {
             Icon(
                 imageVector = Icons.Filled.Share,
                 contentDescription = stringResource(id = R.string.share)
             )
-
         }
     }
-
 }
-
 
 @Composable
 fun ActionRow(
     modifier: Modifier = Modifier,
-    username: String,
     isLiked: Boolean = false,
     onLikeClick: (Boolean) -> Unit = {},
     onCommentClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
-    onUsernameClicked: (String) -> Unit = {}
+    username: String,
+    onUsernameClick: (String) -> Unit = {}
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -229,16 +230,14 @@ fun ActionRow(
             ),
             modifier = Modifier
                 .clickable {
-                    onUsernameClicked(username)
+                    onUsernameClick(username)
                 }
         )
-
         EngagementButtons(
             isLiked = isLiked,
             onLikeClick = onLikeClick,
             onCommentClick = onCommentClick,
             onShareClick = onShareClick
         )
-
     }
 }
