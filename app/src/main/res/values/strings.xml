@@ -66,11 +66,17 @@
     <string name="post">Post</string>
     <string name="liked_by">Liked by</string>
     <string name="followed_you">Followed you</string>
-    <string name="this_field_cant_be_empty">This field can\'t be empty</string>
+    <string name="error_field_empty">This field can\'t be empty</string>
     <string name="not_a_valid_email">This is not a valid email</string>
     <string name="input_too_short">The minimum length is %d</string>
     <string name="invalid_password">Password needs to contain at least one uppercase letter and one number</string>
     <string name="unkown_error">Unknown error</string>
     <string name="error_couldnt_reach_server">Oops Couldn\'t reach server. Check your internet connection</string>
     <string name="oops_something_went_wrong">Oops something went wrong. Please try again!</string>
+    <string name="success_registration">Successfully registered an account. You can login now!</string>
+    <string name="post_image">Post image</string>
+    <string name="error_no_image_picked">Please pick an photo</string>
+    <string name="error_description_blank">Description is blank</string>
+    <string name="error_file_not_found">File not found!</string>
+    <string name="post_created">Successfully created post!</string>
 </resources>

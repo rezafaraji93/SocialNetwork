@@ -45,6 +45,7 @@ fun PersonListScreen(
             items(10) {
                 UserProfileItem(
                     user = User(
+                        userId = "61461e268509d06a9ed77ff0",
                         profilePictureUrl = "",
                         username = "Philipp Lackner",
                         description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed\n" +

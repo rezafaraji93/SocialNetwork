@@ -2,12 +2,12 @@ package com.faraji.socialnetwork.feature_auth.presentation.register
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -20,17 +20,38 @@ import com.faraji.socialnetwork.R
 import com.faraji.socialnetwork.core.presentation.components.StandardTextField
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceLarge
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceMedium
+import com.faraji.socialnetwork.core.presentation.util.UiEvent
+import com.faraji.socialnetwork.core.presentation.util.asString
 import com.faraji.socialnetwork.core.util.Constants
 import com.faraji.socialnetwork.feature_auth.presentation.util.AuthError
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
+    scaffoldState: ScaffoldState,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val usernameState = viewModel.usernameState.value
     val emailState = viewModel.emailState.value
     val passwordState = viewModel.passwordState.value
+    val registerState = viewModel.registerState.value
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        event.uiText.asString(context),
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
+
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -59,7 +80,7 @@ fun RegisterScreen(
                 },
                 error = when (emailState.error) {
                     is AuthError.FieldEmpty -> stringResource(
-                        id = R.string.this_field_cant_be_empty
+                        id = R.string.error_field_empty
                     )
                     is AuthError.InvalidEmail -> stringResource(
                         id = R.string.not_a_valid_email
@@ -80,7 +101,7 @@ fun RegisterScreen(
                         id = R.string.input_too_short, Constants.MIN_USERNAME_LENGTH
                     )
                     is AuthError.FieldEmpty -> stringResource(
-                        id = R.string.this_field_cant_be_empty
+                        id = R.string.error_field_empty
                     )
                     else -> ""
                 },
@@ -98,7 +119,7 @@ fun RegisterScreen(
                         id = R.string.input_too_short, Constants.MIN_PASSWORD_LENGTH
                     )
                     is AuthError.FieldEmpty -> stringResource(
-                        id = R.string.this_field_cant_be_empty
+                        id = R.string.error_field_empty
                     )
                     is AuthError.InvalidPassword -> {
                         stringResource(id = R.string.invalid_password)
@@ -119,6 +140,7 @@ fun RegisterScreen(
                 onClick = {
                     viewModel.onEvent(RegisterEvent.Register)
                 },
+                enabled = !registerState.isLoading,
                 modifier = Modifier
                     .align(Alignment.End)
             ) {
@@ -127,7 +149,12 @@ fun RegisterScreen(
                     color = MaterialTheme.colors.onPrimary
                 )
             }
+
+            if (registerState.isLoading) {
+                CircularProgressIndicator()
+            }
         }
+
 
         Text(
             text = buildAnnotatedString {

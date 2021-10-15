@@ -15,16 +15,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.faraji.socialnetwork.R
-import com.faraji.socialnetwork.core.util.Constants
-import com.faraji.socialnetwork.core.util.Screen
-import kotlinx.coroutines.delay
+import com.faraji.socialnetwork.core.presentation.util.UiEvent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SplashScreen(
-    navController: NavController
+    navController: NavController,
+    dispatcher: CoroutineDispatcher = Dispatchers.Main,
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
+
     val scale = remember {
         Animatable(0f)
     }
@@ -32,20 +38,31 @@ fun SplashScreen(
         OvershootInterpolator(2f)
     }
     LaunchedEffect(key1 = true) {
-        scale.animateTo(
-            1f,
-            animationSpec = tween(
-                durationMillis = 1000,
-                easing = {
-                    overshootInterpolator.getInterpolation(it)
-                }
+        withContext(dispatcher) {
+            scale.animateTo(
+                1f,
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = {
+                        overshootInterpolator.getInterpolation(it)
+                    }
+                )
             )
-        )
-        delay(Constants.SPLASH_SCREEN_DURATION)
-        navController.popBackStack()
-        navController.navigate(Screen.LoginScreen.route)
-
+        }
     }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvent.Navigate -> {
+                    navController.popBackStack()
+                    navController.navigate(event.route)
+                }
+                else -> Unit
+            }
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Image(
             painter = painterResource(id = R.drawable.logoo),

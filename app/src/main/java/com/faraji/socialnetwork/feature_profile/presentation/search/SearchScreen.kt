@@ -22,6 +22,7 @@ import com.faraji.socialnetwork.core.presentation.components.UserProfileItem
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceLarge
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceMedium
 import com.faraji.socialnetwork.core.domain.states.StandardTextFieldState
+import com.faraji.socialnetwork.core.util.Screen
 
 @ExperimentalMaterialApi
 @Composable
@@ -63,6 +64,7 @@ fun SearchScreen(
                 items(10) {
                     UserProfileItem(
                         user = User(
+                            userId = "61461e268509d06a9ed77ff0",
                             profilePictureUrl = "",
                             username = "Philipp Lackner",
                             description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed\n" +
@@ -77,6 +79,11 @@ fun SearchScreen(
                                 imageVector = Icons.Default.PersonAdd,
                                 contentDescription = null,
                                 tint = MaterialTheme.colors.onBackground
+                            )
+                        },
+                        onItemCLick = {
+                            navController.navigate(
+                                Screen.ProfileScreen.route + "?userId=61461e268509d06a9ed77ff0"
                             )
                         }
                     )

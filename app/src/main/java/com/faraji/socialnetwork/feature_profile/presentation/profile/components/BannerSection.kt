@@ -14,8 +14,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.faraji.socialnetwork.R
-import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceMedium
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceSmall
 import com.faraji.socialnetwork.presentation.util.toPx
 
@@ -24,9 +24,13 @@ fun BannerSection(
     modifier: Modifier = Modifier,
     imageModifier: Modifier = Modifier,
     iconSize: Dp = 35.dp,
+    bannerImageUrl: String? = null,
     leftIconModifier: Modifier = Modifier,
     rightIconModifier: Modifier = Modifier,
-    onIconGroupWidthChange: (Int) -> Unit = {},
+    topSkillUrls: List<String> = emptyList(),
+    shouldShowGitHub: Boolean = false,
+    shouldShowInstagram: Boolean = false,
+    shouldShowLinkedIn: Boolean = false,
     onGitHubClick: () -> Unit = {},
     onInstagramClick: () -> Unit = {},
     onLinkedInClick: () -> Unit = {}
@@ -35,7 +39,12 @@ fun BannerSection(
         modifier = modifier
     ) {
         Image(
-            painter = painterResource(id = R.drawable.android),
+            painter = rememberImagePainter(
+                data = bannerImageUrl,
+                builder = {
+                    crossfade(true)
+                }
+            ),
             contentDescription = stringResource(id = R.string.banner_image),
             contentScale = ContentScale.Crop,
             modifier = imageModifier
@@ -60,61 +69,61 @@ fun BannerSection(
                 .align(Alignment.BottomStart)
                 .padding(SpaceSmall)
         ) {
-            Spacer(modifier = Modifier.width(SpaceSmall))
-            Image(
-                painter = painterResource(id = R.drawable.ic_kotlin),
-                contentDescription = "Javscript",
-                modifier = Modifier.height(iconSize)
-            )
-            Spacer(modifier = Modifier.width(SpaceMedium))
-            Image(
-                painter = painterResource(id = R.drawable.ic_swift),
-                contentDescription = "C#",
-                modifier = Modifier.height(iconSize)
-            )
-            Spacer(modifier = Modifier.width(SpaceMedium))
-            Image(
-                painter = painterResource(id = R.drawable.ic_c),
-                contentDescription = "Kotlin",
-                modifier = Modifier.height(iconSize)
-            )
+            topSkillUrls.forEach { skillUrl ->
+                Spacer(modifier = Modifier.width(SpaceSmall))
+                Image(
+                    painter = rememberImagePainter(
+                        data = skillUrl,
+                        builder = {
+                            crossfade(true)
+                        }
+                    ),
+                    contentDescription = "Javscript",
+                    modifier = Modifier.height(iconSize)
+                )
+            }
         }
-
         Row(
             modifier = rightIconModifier
                 .height(iconSize)
                 .align(Alignment.BottomEnd)
                 .padding(SpaceSmall)
         ) {
-            IconButton(
-                onClick = onGitHubClick,
-                modifier = Modifier.size(iconSize)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_github_icon),
-                    contentDescription = "GitHub",
+            if (shouldShowGitHub) {
+                IconButton(
+                    onClick = onGitHubClick,
                     modifier = Modifier.size(iconSize)
-                )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_github_icon),
+                        contentDescription = "GitHub",
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
             }
-            IconButton(
-                onClick = onInstagramClick,
-                modifier = Modifier.size(iconSize)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_instagram),
-                    contentDescription = "Instagram",
+            if (shouldShowInstagram) {
+                IconButton(
+                    onClick = onInstagramClick,
                     modifier = Modifier.size(iconSize)
-                )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_instagram),
+                        contentDescription = "Instagram",
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
             }
-            IconButton(
-                onClick = onLinkedInClick,
-                modifier = Modifier.size(iconSize)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_linkedin_icon),
-                    contentDescription = "LinkedIn",
+            if (shouldShowLinkedIn) {
+                IconButton(
+                    onClick = onLinkedInClick,
                     modifier = Modifier.size(iconSize)
-                )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_linkedin_icon),
+                        contentDescription = "LinkedIn",
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
             }
         }
     }
