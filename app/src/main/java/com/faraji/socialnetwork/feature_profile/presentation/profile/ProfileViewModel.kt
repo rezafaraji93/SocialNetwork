@@ -34,7 +34,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<String>("userId")?.let { userId ->
-            print("USER ID = $userId")
             getProfile(userId)
         }
     }
@@ -47,21 +46,12 @@ class ProfileViewModel @Inject constructor(
         _toolbarState.value = _toolbarState.value.copy(toolbarOffsetY = value)
     }
 
-     fun onEvent(event: ProfileEvent) {
-        when(event) {
-            is ProfileEvent.GetProfile -> {
-
-            }
-        }
-     }
-
     private fun getProfile(userId: String) {
         viewModelScope.launch {
             _state.value = state.value.copy(
                 isLoading = true
             )
-            val result = profileUseCases.getProfile.invoke(userId)
-            when(result) {
+            when(val result = profileUseCases.getProfile.invoke(userId)) {
                 is Resource.Success -> {
                     _state.value = state.value.copy(
                         profile = result.data,

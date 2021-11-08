@@ -25,9 +25,6 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-//import coil.annotation.ExperimentalCoilApi
-//import coil.compose.rememberImagePainter
-//import coil.request.ImageRequest
 import com.faraji.socialnetwork.R
 import com.faraji.socialnetwork.core.presentation.components.StandardTextField
 import com.faraji.socialnetwork.core.presentation.components.StandardToolbar
@@ -36,7 +33,6 @@ import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceSmall
 import com.faraji.socialnetwork.core.presentation.util.CropActivityResultContract
 import com.faraji.socialnetwork.core.presentation.util.UiEvent
 import com.faraji.socialnetwork.core.presentation.util.asString
-import com.faraji.socialnetwork.core.util.UiText
 import com.faraji.socialnetwork.feature_post.presentation.util.PostConstants.MAX_POST_DESCRIPTION_LENGTH
 import com.faraji.socialnetwork.feature_post.presentation.util.PostDescriptionError
 import kotlinx.coroutines.GlobalScope
@@ -65,10 +61,10 @@ fun CreatePostScreen(
     }
 
     val context = LocalContext.current
-    
+
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
-            when(event) {
+            when (event) {
                 is UiEvent.ShowSnackbar -> {
                     GlobalScope.launch {
                         scaffoldState.snackbarHostState.showSnackbar(

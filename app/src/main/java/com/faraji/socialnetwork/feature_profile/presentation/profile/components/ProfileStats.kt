@@ -35,7 +35,7 @@ fun ProfileStats(
         ProfileNumber(number = user.followingCount, text = stringResource(id = R.string.following))
         ProfileNumber(number = user.postCount, text = stringResource(id = R.string.posts))
 
-        if (isOwnProfile) {
+        if (!isOwnProfile) {
             Button(
                 onClick = onFollowClick,
                 colors = ButtonDefaults.buttonColors(

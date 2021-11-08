@@ -23,7 +23,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -32,6 +31,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.faraji.socialnetwork.R
 import com.faraji.socialnetwork.core.domain.models.User
+import com.faraji.socialnetwork.core.presentation.components.Post
 import com.faraji.socialnetwork.core.presentation.ui.theme.ProfilePictureSizeLarge
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceMedium
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceSmall
@@ -40,7 +40,6 @@ import com.faraji.socialnetwork.core.presentation.util.asString
 import com.faraji.socialnetwork.core.util.Screen
 import com.faraji.socialnetwork.feature_profile.presentation.profile.components.BannerSection
 import com.faraji.socialnetwork.feature_profile.presentation.profile.components.ProfileHeaderSection
-import com.faraji.socialnetwork.presentation.components.Post
 import com.faraji.socialnetwork.presentation.util.toPx
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
@@ -101,7 +100,7 @@ fun ProfileScreen(
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
-            when(event) {
+            when (event) {
                 is UiEvent.ShowSnackbar -> {
                     GlobalScope.launch {
                         scaffoldState.snackbarHostState.showSnackbar(
@@ -201,7 +200,7 @@ fun ProfileScreen(
                             translationX = (1f - toolbarState.expandedRatio) *
                                     -iconHorizontalCenterLength
                         },
-                    topSkillUrls = profile.topSkillUrls,
+                    topSkillUrls = profile.topSkills,
                     shouldShowGitHub = profile.githubUrl != null,
                     shouldShowInstagram = profile.instagramUrl != null,
                     shouldShowLinkedIn = profile.linkedinUrl != null,

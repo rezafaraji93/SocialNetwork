@@ -5,15 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.faraji.socialnetwork.feature_post.data.remote.PostApi
 import com.faraji.socialnetwork.feature_post.domain.use_case.PostUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class MainFeedViewModel @Inject constructor(
-    private val useCase: PostUseCases,
-    private val api: PostApi
+    useCase: PostUseCases
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MainFeedState())

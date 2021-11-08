@@ -4,6 +4,7 @@ import com.faraji.socialnetwork.feature_profile.data.remote.ProfileApi
 import com.faraji.socialnetwork.feature_profile.data.repository.ProfileRepositoryImpl
 import com.faraji.socialnetwork.feature_profile.domain.repository.ProfileRepository
 import com.faraji.socialnetwork.feature_profile.domain.use_case.GetProfileUseCase
+import com.faraji.socialnetwork.feature_profile.domain.use_case.GetSkillsUseCase
 import com.faraji.socialnetwork.feature_profile.domain.use_case.ProfileUseCases
 import dagger.Module
 import dagger.Provides
@@ -39,7 +40,8 @@ object ProfileModule {
     @Singleton
     fun provideProfileUseCases(repository: ProfileRepository): ProfileUseCases {
         return ProfileUseCases(
-            getProfile = GetProfileUseCase(repository)
+            getProfile = GetProfileUseCase(repository),
+            getSkills = GetSkillsUseCase(repository)
         )
     }
 }

@@ -5,7 +5,7 @@ data class Profile(
     val username: String,
     val profilePictureUrl: String,
     val bannerUrl: String,
-    val topSkillUrls: List<String>,
+    val topSkills: List<Skill>,
     val githubUrl: String?,
     val instagramUrl: String?,
     val linkedinUrl: String?,

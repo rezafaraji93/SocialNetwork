@@ -12,14 +12,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
+import com.faraji.socialnetwork.core.presentation.components.Navigation
 import com.faraji.socialnetwork.core.presentation.components.StandardScaffold
 import com.faraji.socialnetwork.core.presentation.ui.theme.SocialNetworkTheme
-import com.faraji.socialnetwork.core.presentation.components.Navigation
 import com.faraji.socialnetwork.core.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @ExperimentalCoilApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,4 +1,4 @@
-package com.faraji.socialnetwork.presentation.components
+package com.faraji.socialnetwork.core.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

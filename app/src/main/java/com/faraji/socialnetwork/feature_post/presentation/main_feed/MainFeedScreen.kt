@@ -10,10 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,7 +21,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.faraji.socialnetwork.R
-import com.faraji.socialnetwork.presentation.components.Post
+import com.faraji.socialnetwork.core.presentation.components.Post
 import com.faraji.socialnetwork.core.presentation.components.StandardToolbar
 import com.faraji.socialnetwork.core.util.Screen
 import kotlinx.coroutines.launch
@@ -71,19 +69,14 @@ fun MainFeedScreen(
             }
             LazyColumn {
                 items(posts) { post ->
-                    Post(
-                        post = com.faraji.socialnetwork.core.domain.models.Post(
-                            username = post?.username ?: "",
-                            imageUrl = post?.imageUrl ?: "",
-                            profilePictureUrl = post?.profilePictureUrl ?: "",
-                            description = post?.description ?: "",
-                            likeCount = post?.likeCount ?: 0,
-                            commentCount = post?.commentCount ?: 0
-                        ),
-                        onPostClick = {
-                            navController.navigate(Screen.PostDetailScreen.route)
-                        }
-                    )
+                    post?.let {
+                        Post(
+                            post = it,
+                            onPostClick = {
+                                navController.navigate(Screen.PostDetailScreen.route)
+                            }
+                        )
+                    }
                 }
                 item {
                     if (state.isLoadingNewPosts) {
@@ -114,6 +107,5 @@ fun MainFeedScreen(
                 }
             }
         }
-
     }
 }

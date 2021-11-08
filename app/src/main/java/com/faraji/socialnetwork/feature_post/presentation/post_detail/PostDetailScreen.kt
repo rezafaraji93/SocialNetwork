@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import com.faraji.socialnetwork.R
 import com.faraji.socialnetwork.core.domain.models.Comment
 import com.faraji.socialnetwork.core.domain.models.Post
-import com.faraji.socialnetwork.presentation.components.ActionRow
+import com.faraji.socialnetwork.core.presentation.components.ActionRow
 import com.faraji.socialnetwork.core.presentation.components.StandardTextField
 import com.faraji.socialnetwork.core.presentation.components.StandardToolbar
 import com.faraji.socialnetwork.core.presentation.ui.theme.*

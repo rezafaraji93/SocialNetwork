@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.faraji.socialnetwork.R
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceSmall
+import com.faraji.socialnetwork.feature_profile.domain.model.Skill
 import com.faraji.socialnetwork.presentation.util.toPx
 
 @Composable
@@ -27,7 +28,7 @@ fun BannerSection(
     bannerImageUrl: String? = null,
     leftIconModifier: Modifier = Modifier,
     rightIconModifier: Modifier = Modifier,
-    topSkillUrls: List<String> = emptyList(),
+    topSkillUrls: List<Skill> = emptyList(),
     shouldShowGitHub: Boolean = false,
     shouldShowInstagram: Boolean = false,
     shouldShowLinkedIn: Boolean = false,

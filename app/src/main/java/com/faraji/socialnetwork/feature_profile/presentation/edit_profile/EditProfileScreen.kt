@@ -28,8 +28,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.faraji.socialnetwork.R
-import com.faraji.socialnetwork.core.domain.states.StandardTextFieldState
 import com.faraji.socialnetwork.core.presentation.components.StandardTextField
 import com.faraji.socialnetwork.core.presentation.components.StandardToolbar
 import com.faraji.socialnetwork.core.presentation.ui.theme.ProfilePictureSizeLarge
@@ -48,6 +49,13 @@ fun EditProfileScreen(
     viewModel: EditProfileViewModel = hiltViewModel(),
     profilePictureSize: Dp = ProfilePictureSizeLarge
 ) {
+    val profileState = viewModel.profileState.value
+    val usernameState = viewModel.userNameState.value
+    val githubState = viewModel.githubTextFieldState.value
+    val instagramState = viewModel.instagramTextFieldState.value
+    val linkedInState = viewModel.linkedinTextFieldState.value
+    val bioState = viewModel.bioState.value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,8 +89,18 @@ fun EditProfileScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             BannerEditSection(
-                bannerImage = painterResource(id = R.drawable.android),
-                profileImage = painterResource(id = R.drawable.reza),
+                bannerImage = rememberImagePainter(
+                    data = profileState.profile?.bannerUrl,
+                    builder = {
+                        crossfade(true)
+                    }
+                ),
+                profileImage = rememberImagePainter(
+                    data = profileState.profile?.profilePictureUrl,
+                    builder = {
+                        crossfade(true)
+                    }
+                ),
                 profilePictureSize = profilePictureSize
             )
             Column(
@@ -93,9 +111,9 @@ fun EditProfileScreen(
                 Spacer(modifier = Modifier.height(SpaceMedium))
                 StandardTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    text = viewModel.userNameState.value.text,
+                    text = usernameState.text,
                     hint = stringResource(id = R.string.username),
-                    error = when (viewModel.userNameState.value.error) {
+                    error = when (usernameState.error) {
                         is EditProfileError.FieldEmpty -> stringResource(
                             id = R.string.error_field_empty
                         )
@@ -103,17 +121,15 @@ fun EditProfileScreen(
                     },
                     leadingIcon = Icons.Default.Person,
                     onValueChanged = {
-                        viewModel.setUsernameState(
-                            StandardTextFieldState(text = it)
-                        )
+                        viewModel.onEvent(EditProfileEvent.EnteredUsername(it))
                     }
                 )
                 Spacer(modifier = Modifier.height(SpaceMedium))
                 StandardTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    text = viewModel.githubTextFieldState.value.text,
+                    text = githubState.text,
                     hint = stringResource(id = R.string.github_profile_url),
-                    error = when (viewModel.githubTextFieldState.value.error) {
+                    error = when (githubState.error) {
                         is EditProfileError.FieldEmpty -> stringResource(
                             id = R.string.error_field_empty
                         )
@@ -121,17 +137,15 @@ fun EditProfileScreen(
                     },
                     leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_github_icon),
                     onValueChanged = {
-                        viewModel.setGithubTextFieldState(
-                            StandardTextFieldState(text = it)
-                        )
+                        viewModel.onEvent(EditProfileEvent.EnteredGithubUrl(it))
                     }
                 )
                 Spacer(modifier = Modifier.height(SpaceMedium))
                 StandardTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    text = viewModel.instagramTextFieldState.value.text,
+                    text = instagramState.text,
                     hint = stringResource(id = R.string.instagram_profile_url),
-                    error = when (viewModel.instagramTextFieldState.value.error) {
+                    error = when (instagramState.error) {
                         is EditProfileError.FieldEmpty -> stringResource(
                             id = R.string.error_field_empty
                         )
@@ -139,17 +153,15 @@ fun EditProfileScreen(
                     },
                     leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_instagram),
                     onValueChanged = {
-                        viewModel.setInstagramTextFieldState(
-                            StandardTextFieldState(text = it)
-                        )
+                        viewModel.onEvent(EditProfileEvent.EnteredInstagramUrl(it))
                     }
                 )
                 Spacer(modifier = Modifier.height(SpaceMedium))
                 StandardTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    text = viewModel.linkedinTextFieldState.value.text,
+                    text = linkedInState.text,
                     hint = stringResource(id = R.string.linkedin_profile_url),
-                    error = when (viewModel.linkedinTextFieldState.value.error) {
+                    error = when (linkedInState.error) {
                         is EditProfileError.FieldEmpty -> stringResource(
                             id = R.string.error_field_empty
                         )
@@ -157,17 +169,15 @@ fun EditProfileScreen(
                     },
                     leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_linkedin_icon),
                     onValueChanged = {
-                        viewModel.setLinkedinTextFieldState(
-                            StandardTextFieldState(text = it)
-                        )
+                        viewModel.onEvent(EditProfileEvent.EnteredLinkedInUrl(it))
                     }
                 )
                 Spacer(modifier = Modifier.height(SpaceMedium))
                 StandardTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    text = viewModel.bioState.value.text,
+                    text = bioState.text,
                     hint = stringResource(id = R.string.bio),
-                    error = when (viewModel.bioState.value.error) {
+                    error = when (bioState.error) {
                         is EditProfileError.FieldEmpty -> stringResource(
                             id = R.string.error_field_empty
                         )
@@ -177,9 +187,7 @@ fun EditProfileScreen(
                     maxLines = 3,
                     leadingIcon = Icons.Default.Description,
                     onValueChanged = {
-                        viewModel.setBioState(
-                            StandardTextFieldState(text = it)
-                        )
+                        viewModel.onEvent(EditProfileEvent.EnteredBio(it))
                     }
                 )
                 Spacer(modifier = Modifier.height(SpaceMedium))

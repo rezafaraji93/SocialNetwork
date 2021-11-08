@@ -79,4 +79,5 @@
     <string name="error_description_blank">Description is blank</string>
     <string name="error_file_not_found">File not found!</string>
     <string name="post_created">Successfully created post!</string>
+    <string name="couldnt_load_profile">Oops! Couldn\'t load profile</string>
 </resources>
