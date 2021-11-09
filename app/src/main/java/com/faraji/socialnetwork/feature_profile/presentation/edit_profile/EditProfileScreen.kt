@@ -1,25 +1,26 @@
 package com.faraji.socialnetwork.feature_profile.presentation.edit_profile
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
 import com.faraji.socialnetwork.R
 import com.faraji.socialnetwork.core.presentation.components.StandardTextField
 import com.faraji.socialnetwork.core.presentation.components.StandardToolbar
@@ -37,24 +37,63 @@ import com.faraji.socialnetwork.core.presentation.ui.theme.ProfilePictureSizeLar
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceLarge
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceMedium
 import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceSmall
+import com.faraji.socialnetwork.core.presentation.util.CropActivityResultContract
+import com.faraji.socialnetwork.core.presentation.util.UiEvent
+import com.faraji.socialnetwork.core.presentation.util.asString
 import com.faraji.socialnetwork.feature_profile.presentation.edit_profile.components.Chip
 import com.faraji.socialnetwork.feature_profile.presentation.util.EditProfileError
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
-import kotlin.random.Random
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun EditProfileScreen(
     navController: NavController,
     viewModel: EditProfileViewModel = hiltViewModel(),
+    scaffoldState: ScaffoldState,
     profilePictureSize: Dp = ProfilePictureSizeLarge
 ) {
     val profileState = viewModel.profileState.value
+    val skillsState = viewModel.skills.value
     val usernameState = viewModel.userNameState.value
     val githubState = viewModel.githubTextFieldState.value
     val instagramState = viewModel.instagramTextFieldState.value
     val linkedInState = viewModel.linkedinTextFieldState.value
     val bioState = viewModel.bioState.value
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.uiText.asString(context)
+                    )
+                }
+            }
+        }
+    }
+
+    val cropProfilePictureLauncher = rememberLauncherForActivityResult(
+        contract = CropActivityResultContract(1f, 1f)
+    ) {
+        viewModel.onEvent(EditProfileEvent.CropProfilePicture(it))
+    }
+    val cropBannerImageLauncher = rememberLauncherForActivityResult(
+        contract = CropActivityResultContract(5f, 2f)
+    ) {
+        viewModel.onEvent(EditProfileEvent.CropBannerImage(it))
+    }
+    val profilePictureGalleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        cropProfilePictureLauncher.launch(it)
+    }
+    val bannerImageGalleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        cropBannerImageLauncher.launch(it)
+    }
 
     Column(
         modifier = Modifier
@@ -65,7 +104,9 @@ fun EditProfileScreen(
             showBackArrow = true,
             navActions = {
                 IconButton(
-                    onClick = {}
+                    onClick = {
+                        viewModel.onEvent(EditProfileEvent.UpdateProfile)
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
@@ -95,13 +136,19 @@ fun EditProfileScreen(
                         crossfade(true)
                     }
                 ),
+                onBannerClick = {
+                    bannerImageGalleryLauncher.launch("image/*")
+                },
                 profileImage = rememberImagePainter(
                     data = profileState.profile?.profilePictureUrl,
                     builder = {
                         crossfade(true)
                     }
                 ),
-                profilePictureSize = profilePictureSize
+                profilePictureSize = profilePictureSize,
+                onProfilePictureClick = {
+                    profilePictureGalleryLauncher.launch("image/*")
+                }
             )
             Column(
                 modifier = Modifier
@@ -205,22 +252,12 @@ fun EditProfileScreen(
                     mainAxisSpacing = SpaceSmall,
                     crossAxisSpacing = SpaceMedium
                 ) {
-                    listOf(
-                        "Kotlin",
-                        "JavaScript",
-                        "Java",
-                        "Python",
-                        "C++",
-                        "PHP",
-                        "Swift",
-                        "Go",
-                        "C#",
-                    ).forEach {
+                    skillsState.skills.forEach {
                         Chip(
-                            text = it,
-                            selected = Random.nextInt(2) == 0
+                            text = it.name,
+                            selected = it in skillsState.selectedSkills
                         ) {
-
+                            skillsState.
                         }
 
                     }
@@ -235,7 +272,7 @@ fun BannerEditSection(
     bannerImage: Painter,
     profileImage: Painter,
     onBannerClick: () -> Unit = {},
-    onProfileImageClick: () -> Unit = {},
+    onProfilePictureClick: () -> Unit = {},
     profilePictureSize: Dp = ProfilePictureSizeLarge
 ) {
     val bannerHeight = (LocalConfiguration.current.screenWidthDp / 2.5f).dp
@@ -247,6 +284,7 @@ fun BannerEditSection(
         Image(
             painter = bannerImage,
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(bannerHeight)
@@ -267,7 +305,7 @@ fun BannerEditSection(
                     shape = CircleShape
                 )
                 .clickable {
-                    onProfileImageClick()
+                    onProfilePictureClick()
                 }
         )
     }

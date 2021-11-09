@@ -28,7 +28,7 @@ fun BannerSection(
     bannerImageUrl: String? = null,
     leftIconModifier: Modifier = Modifier,
     rightIconModifier: Modifier = Modifier,
-    topSkillUrls: List<Skill> = emptyList(),
+    topSkills: List<Skill> = emptyList(),
     shouldShowGitHub: Boolean = false,
     shouldShowInstagram: Boolean = false,
     shouldShowLinkedIn: Boolean = false,
@@ -70,7 +70,7 @@ fun BannerSection(
                 .align(Alignment.BottomStart)
                 .padding(SpaceSmall)
         ) {
-            topSkillUrls.forEach { skillUrl ->
+            topSkills.forEach { skillUrl ->
                 Spacer(modifier = Modifier.width(SpaceSmall))
                 Image(
                     painter = rememberImagePainter(

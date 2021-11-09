@@ -80,4 +80,7 @@
     <string name="error_file_not_found">File not found!</string>
     <string name="post_created">Successfully created post!</string>
     <string name="couldnt_load_profile">Oops! Couldn\'t load profile</string>
+    <string name="error_couldnt_load_skills">Oops! Couldn\'t load skills</string>
+    <string name="error_username_empty">Username can\'t be empty</string>
+    <string name="updated_profile">Successfully updated profile</string>
 </resources>

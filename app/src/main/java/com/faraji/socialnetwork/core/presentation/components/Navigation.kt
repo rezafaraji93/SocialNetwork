@@ -78,8 +78,20 @@ fun Navigation(
                 scaffoldState = scaffoldState
             )
         }
-        composable(Screen.EditProfileScreen.route) {
-            EditProfileScreen(navController = navController)
+        composable(
+            Screen.EditProfileScreen.route + "/{userId}",
+            arguments = listOf(
+                navArgument(name = "userId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) {
+            EditProfileScreen(
+                navController = navController,
+                scaffoldState = scaffoldState
+            )
         }
         composable(Screen.CreatePostScreen.route) {
             CreatePostScreen(
@@ -106,7 +118,5 @@ fun Navigation(
         composable(Screen.PersonListScreen.route) {
             PersonListScreen(navController = navController)
         }
-
-
     }
 }
