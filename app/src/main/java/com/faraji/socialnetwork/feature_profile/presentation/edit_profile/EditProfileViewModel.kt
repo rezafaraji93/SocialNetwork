@@ -11,7 +11,6 @@ import com.faraji.socialnetwork.core.domain.states.StandardTextFieldState
 import com.faraji.socialnetwork.core.presentation.util.UiEvent
 import com.faraji.socialnetwork.core.util.Resource
 import com.faraji.socialnetwork.core.util.UiText
-import com.faraji.socialnetwork.feature_profile.domain.model.Skill
 import com.faraji.socialnetwork.feature_profile.domain.model.UpdateProfileData
 import com.faraji.socialnetwork.feature_profile.domain.use_case.ProfileUseCases
 import com.faraji.socialnetwork.feature_profile.presentation.profile.ProfileState
@@ -98,14 +97,35 @@ class EditProfileViewModel @Inject constructor(
                 )
             }
             is EditProfileEvent.SetSkillSelected -> {
-                _skills.value = _skills.value.copy(
-                    selectedSkills = listOf(
-                        Skill(
-                            name = event.skill,
-                            imageUrl = event.skill
-                        )
-                    )
+                val result = profileUseCases.setSkillSelected(
+                    selectedSkills = _skills.value.selectedSkills,
+                    skillToToggle = event.skill
                 )
+                viewModelScope.launch {
+                    when (result) {
+                        is Resource.Success -> {
+                            _skills.value = skills.value.copy(
+                                selectedSkills = result.data ?: kotlin.run {
+                                    _eventFlow.emit(
+                                        UiEvent.ShowSnackbar(
+                                            UiText.unknownError()
+                                        )
+                                    )
+                                    return@launch
+                                }
+                            )
+                        }
+                        is Resource.Error -> {
+                            _eventFlow.emit(
+                                UiEvent.ShowSnackbar(
+                                    result.uiText ?: UiText.unknownError()
+                                )
+                            )
+                            return@launch
+                        }
+                    }
+                }
+
             }
             is EditProfileEvent.UpdateProfile -> {
                 updateProfile()
@@ -135,6 +155,7 @@ class EditProfileViewModel @Inject constructor(
                             UiText.StringResource(R.string.updated_profile)
                         )
                     )
+                    _eventFlow.emit(UiEvent.NavigateUp)
                 }
                 is Resource.Error -> {
                     _eventFlow.emit(

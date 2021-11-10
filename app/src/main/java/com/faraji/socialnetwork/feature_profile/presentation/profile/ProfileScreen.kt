@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
+    userId: String,
     navController: NavController,
     scaffoldState: ScaffoldState,
     profilePictureSize: Dp = ProfilePictureSizeLarge,
@@ -99,6 +100,7 @@ fun ProfileScreen(
     }
 
     LaunchedEffect(key1 = true) {
+        viewModel.getProfile(userId)
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.ShowSnackbar -> {
@@ -201,9 +203,9 @@ fun ProfileScreen(
                                     -iconHorizontalCenterLength
                         },
                     topSkills = profile.topSkills,
-                    shouldShowGitHub = profile.githubUrl != null,
-                    shouldShowInstagram = profile.instagramUrl != null,
-                    shouldShowLinkedIn = profile.linkedinUrl != null,
+                    shouldShowGitHub = profile.githubUrl != null && profile.githubUrl.isNotBlank(),
+                    shouldShowInstagram = profile.instagramUrl != null && profile.instagramUrl.isNotBlank(),
+                    shouldShowLinkedIn = profile.linkedinUrl != null && profile.linkedinUrl.isNotBlank(),
                     onGitHubClick = {
 
                     }

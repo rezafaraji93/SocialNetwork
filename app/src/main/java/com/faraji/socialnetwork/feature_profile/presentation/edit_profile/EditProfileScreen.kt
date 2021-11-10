@@ -40,6 +40,7 @@ import com.faraji.socialnetwork.core.presentation.ui.theme.SpaceSmall
 import com.faraji.socialnetwork.core.presentation.util.CropActivityResultContract
 import com.faraji.socialnetwork.core.presentation.util.UiEvent
 import com.faraji.socialnetwork.core.presentation.util.asString
+import com.faraji.socialnetwork.feature_profile.domain.model.Skill
 import com.faraji.socialnetwork.feature_profile.presentation.edit_profile.components.Chip
 import com.faraji.socialnetwork.feature_profile.presentation.util.EditProfileError
 import com.google.accompanist.flowlayout.FlowRow
@@ -69,6 +70,9 @@ fun EditProfileScreen(
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.uiText.asString(context)
                     )
+                }
+                is UiEvent.NavigateUp -> {
+                    navController.navigateUp()
                 }
             }
         }
@@ -131,7 +135,7 @@ fun EditProfileScreen(
         ) {
             BannerEditSection(
                 bannerImage = rememberImagePainter(
-                    data = profileState.profile?.bannerUrl,
+                    data = viewModel.bannerImageUri.value ?: profileState.profile?.bannerUrl,
                     builder = {
                         crossfade(true)
                     }
@@ -140,7 +144,8 @@ fun EditProfileScreen(
                     bannerImageGalleryLauncher.launch("image/*")
                 },
                 profileImage = rememberImagePainter(
-                    data = profileState.profile?.profilePictureUrl,
+                    data = viewModel.profilePictureUri.value
+                        ?: profileState.profile?.profilePictureUrl,
                     builder = {
                         crossfade(true)
                     }
@@ -182,6 +187,7 @@ fun EditProfileScreen(
                         )
                         else -> ""
                     },
+                    maxLength = 100,
                     leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_github_icon),
                     onValueChanged = {
                         viewModel.onEvent(EditProfileEvent.EnteredGithubUrl(it))
@@ -198,6 +204,7 @@ fun EditProfileScreen(
                         )
                         else -> ""
                     },
+                    maxLength = 100,
                     leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_instagram),
                     onValueChanged = {
                         viewModel.onEvent(EditProfileEvent.EnteredInstagramUrl(it))
@@ -214,6 +221,7 @@ fun EditProfileScreen(
                         )
                         else -> ""
                     },
+                    maxLength = 100,
                     leadingIcon = ImageVector.vectorResource(id = R.drawable.ic_linkedin_icon),
                     onValueChanged = {
                         viewModel.onEvent(EditProfileEvent.EnteredLinkedInUrl(it))
@@ -230,6 +238,7 @@ fun EditProfileScreen(
                         )
                         else -> ""
                     },
+                    maxLength = 200,
                     singleLine = false,
                     maxLines = 3,
                     leadingIcon = Icons.Default.Description,
@@ -252,14 +261,16 @@ fun EditProfileScreen(
                     mainAxisSpacing = SpaceSmall,
                     crossAxisSpacing = SpaceMedium
                 ) {
-                    skillsState.skills.forEach {
+                    skillsState.skills.forEach { skill ->
                         Chip(
-                            text = it.name,
-                            selected = it in skillsState.selectedSkills
-                        ) {
-                            skillsState.
-                        }
-
+                            text = skill.name,
+                            selected = skill in skillsState.selectedSkills,
+                            onChipClick = {
+                                viewModel.onEvent(
+                                    EditProfileEvent.SetSkillSelected(skill)
+                                )
+                            }
+                        )
                     }
                 }
             }
